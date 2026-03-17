@@ -88,7 +88,6 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "// Optionally save checkout status if needed",
               "pm.test('Book checked out successfully', function() {",
               "    pm.response.to.have.status(200);",
               "});"
@@ -138,6 +137,45 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "skill check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Save actorName as collection variable favoriteActor",
+              "const responseJson = pm.response.json();",
+              "pm.collectionVariables.set('favoriteActor', responseJson.data.actorName);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actorName\": \"Leonardo DiCaprio\"\n}",
+          "options": {"raw": {"language": "json"}}
+        },
+        "url": {
+          "raw": "{{skillcheckBaseUrl}}/post?movieName=Inception",
+          "host": ["{{skillcheckBaseUrl}}"],
+          "path": ["post"],
+          "query": [{"key": "movieName", "value": "Inception"}]
+        },
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {"key": "key", "value": "student-expert", "type": "string"},
+            {"key": "value", "value": "skillcheck", "type": "string"}
+          ]
+        }
+      },
+      "response": []
     }
   ],
   "auth": {
@@ -149,6 +187,7 @@
   },
   "variable": [
     {"key": "baseUrl", "value": "https://library-api.postmanlabs.com"},
-    {"key": "id", "value": ""}
+    {"key": "id", "value": ""},
+    {"key": "skillcheckBaseUrl", "value": "https://postman-echo.com"}
   ]
 }
